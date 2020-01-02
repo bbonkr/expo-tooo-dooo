@@ -7,7 +7,9 @@ import {
     TextInput,
     Dimensions,
     Platform,
+    ScrollView,
 } from 'react-native';
+import { ToDoItem } from './containers/ToDoItem';
 
 const { width } = Dimensions.get('window');
 
@@ -53,6 +55,9 @@ const styles = StyleSheet.create({
         borderBottomColor: '#bbb',
         borderBottomWidth: 1,
     },
+    scrollContainer: {
+        alignItems: 'center',
+    },
 });
 
 const App = () => {
@@ -76,6 +81,10 @@ const App = () => {
                     returnKeyLabel="Done"
                     returnKeyType="done"
                 />
+
+                <ScrollView>
+                    <ToDoItem />
+                </ScrollView>
             </View>
         </View>
     );
