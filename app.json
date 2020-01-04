@@ -1,27 +1,35 @@
 {
-    "expo": {
-        "name": "TOOO DOOO",
-        "slug": "tooo-dooo",
-        "privacy": "public",
-        "sdkVersion": "36.0.0",
-        "platforms": ["ios", "android", "web"],
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "cover",
-            "backgroundColor": "#f96080"
-        },
-        "updates": {
-            "fallbackToCacheTimeout": 0
-        },
-        "assetBundlePatterns": ["**/*"],
-        "ios": {
-            "supportsTablet": true
-        },
-        "android": {
-            "package": "kr.bbon.tooodooo"
-        }
-    }
+  "expo": {
+    "name": "TOOO DOOO",
+    "slug": "tooo-dooo",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#f96080"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "kr.bbon.tooodooo"
+    },
+    "description": "",
+    "githubUrl": "https://github.com/bbonkr/expo-tooo-dooo.git"
+  }
 }
