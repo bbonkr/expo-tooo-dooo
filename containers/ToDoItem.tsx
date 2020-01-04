@@ -7,8 +7,6 @@ import {
     TouchableOpacity,
     TextInput,
     GestureResponderEvent,
-    NativeSyntheticEvent,
-    TextInputFocusEventData,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'red',
     },
     actionText: {
-        // padding: 3,
+        // padding: 1,
     },
 });
 
@@ -107,13 +105,11 @@ export const ToDoItem: React.FC<ToDoItemProps> = ({
         setIsEditing(true);
     };
 
-    const handleBlurInput = (
-        event: NativeSyntheticEvent<TextInputFocusEventData>,
-    ) => {
-        // event.stopPropagation();
+    const handleBlurInput = () => {
         onTextChanged(id, inputText);
         setIsEditing(false);
     };
+
     const handleFinishEditing = (event: GestureResponderEvent) => {
         event.stopPropagation();
         onTextChanged(id, inputText);
