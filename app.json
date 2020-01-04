@@ -1,7 +1,7 @@
 {
     "expo": {
-        "name": "I want to do",
-        "slug": "i-want-to-do",
+        "name": "TOOO DOOO",
+        "slug": "tooo-dooo",
         "privacy": "public",
         "sdkVersion": "36.0.0",
         "platforms": ["ios", "android", "web"],
@@ -10,8 +10,8 @@
         "icon": "./assets/icon.png",
         "splash": {
             "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
+            "resizeMode": "cover",
+            "backgroundColor": "#f96080"
         },
         "updates": {
             "fallbackToCacheTimeout": 0
@@ -19,6 +19,9 @@
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "supportsTablet": true
+        },
+        "android": {
+            "package": "kr.bbon.tooodooo"
         }
     }
 }

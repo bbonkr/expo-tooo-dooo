@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     StyleSheet,
     Text,
@@ -8,8 +8,15 @@ import {
     Dimensions,
     Platform,
     ScrollView,
+    NativeSyntheticEvent,
+    TextInputEndEditingEventData,
+    AsyncStorage,
 } from 'react-native';
+import { AppLoading } from 'expo';
+import uuidv4 from 'uuid/v4';
 import { ToDoItem } from './containers/ToDoItem';
+const AppTitle = 'TOOO DOOO';
+const KEY_DATA: string = 'todos';
 
 const { width } = Dimensions.get('window');
 
@@ -59,31 +66,173 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
+interface ToDo {
+    id: string;
+    text: string;
+    isCompleted: boolean;
+    created: Date;
+}
+interface ToDos {
+    [id: string]: ToDo;
+}
 
 const App = () => {
-    const [newToDo, setNewToDo] = useState('');
+    const [newToDoText, setNewToDoText] = useState('');
+    const [loadedTodos, setLoadedTodos] = useState(false);
+    const [todos, setTodos] = useState<ToDos>();
 
-    const handleChangeInput = (text: string) => {
-        setNewToDo(text);
+    const loadTodos = () => {
+        AsyncStorage.getItem(KEY_DATA)
+            .then(todos => {
+                if (todos) {
+                    const todoValues = JSON.parse(todos);
+                    if (todoValues) {
+                        setTodos(todoValues);
+                    }
+                }
+            })
+            .finally(() => {
+                setLoadedTodos(true);
+            });
     };
 
+    const saveTodos = newTodos => {
+        // console.log(JSON.stringify(newTodos));
+        AsyncStorage.setItem(KEY_DATA, JSON.stringify(newTodos));
+    };
+
+    useEffect(() => {
+        loadTodos();
+    }, []);
+
+    const handleChangeInput = (text: string) => {
+        setNewToDoText(text);
+    };
+
+    const handleAddTodo = (): void => {
+        const id = uuidv4();
+        if (newToDoText) {
+            setTodos(prevState => {
+                const newTodos: ToDos = {
+                    ...prevState,
+                    [id]: {
+                        id,
+                        text: newToDoText,
+                        isCompleted: false,
+                        created: new Date(),
+                    },
+                };
+
+                saveTodos(newTodos);
+
+                return { ...newTodos };
+            });
+            setNewToDoText('');
+        }
+    };
+
+    const handleTodoTextChange = (id: string, text: string) => {
+        setTodos(prev => {
+            const newTodos: ToDos = {
+                ...prev,
+                [id]: {
+                    ...prev[id],
+                    text,
+                },
+            };
+
+            saveTodos(newTodos);
+
+            return { ...newTodos };
+        });
+    };
+    const handleCompleted = (id: string) => {
+        setTodos(prev => {
+            const newTodos: ToDos = {
+                ...prev,
+                [id]: {
+                    ...prev[id],
+                    isCompleted: true,
+                },
+            };
+
+            saveTodos(newTodos);
+
+            return { ...newTodos };
+        });
+    };
+
+    const handleUncompleted = (id: string) => {
+        setTodos(prev => {
+            const newTodos: ToDos = {
+                ...prev,
+                [id]: {
+                    ...prev[id],
+                    isCompleted: false,
+                },
+            };
+
+            saveTodos(newTodos);
+
+            return { ...newTodos };
+        });
+    };
+
+    const handleDelete = (id: string) => {
+        setTodos(prev => {
+            const newTodos = { ...prev };
+
+            delete newTodos[id];
+
+            saveTodos(newTodos);
+
+            return {
+                ...newTodos,
+            };
+        });
+    };
+
+    if (!loadedTodos) {
+        return <AppLoading />;
+    }
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
-            <Text style={styles.title}>I want to do</Text>
+            <Text style={styles.title}>{AppTitle}</Text>
             <View style={styles.card}>
                 <TextInput
                     style={styles.input}
-                    placeholder="New to do"
+                    placeholder={AppTitle}
                     placeholderTextColor="#ccc"
-                    value={newToDo}
+                    autoCorrect={false}
+                    autoCompleteType="off"
+                    value={newToDoText}
                     onChangeText={handleChangeInput}
-                    returnKeyLabel="Done"
                     returnKeyType="done"
+                    onSubmitEditing={handleAddTodo}
+                    underlineColorAndroid="transparent"
                 />
 
                 <ScrollView>
-                    <ToDoItem />
+                    {todos &&
+                        Object.values(todos)
+                            .sort((a, b) => {
+                                return a.created > b.created ? 1 : -1;
+                            })
+                            .map((todo: ToDo) => {
+                                return (
+                                    <ToDoItem
+                                        key={todo.id}
+                                        id={todo.id}
+                                        text={todo.text}
+                                        isCompleted={todo.isCompleted}
+                                        onTextChanged={handleTodoTextChange}
+                                        onCompleted={handleCompleted}
+                                        onUncomplete={handleUncompleted}
+                                        onDelete={handleDelete}
+                                    />
+                                );
+                            })}
                 </ScrollView>
             </View>
         </View>
